@@ -1,9 +1,14 @@
-/*Scrivere un programma che prende in ingresso un intero 'N' ('N' e' piccolo, es. <=512),
- alloca in memoria una matrice di NxN elementi float in modo che siano contigui in memoria.
- Inizializzare tale matrice (chiamata ad esempio M1) in modo arbitrario (ad esempio M1(i,j) = (i+j)/2.0). 
- Fare quindi il salvataggio in un file della matrice sia in formato binario che in formato testuale 
- in modo da ottenere due file separati 'mat_dump.dat' per il formato binario e 'mat_dump.txt' per quello testuale. 
- Chiudere i file creati*/
+/*
+ Scrivere un programma che prende in ingresso un intero 'N' 
+ ('N' e' piccolo, es. <=512), alloca in memoria una matrice di NxN elementi 
+ float in modo che siano contigui in memoria.
+ Inizializzare tale matrice (chiamata ad esempio M1) in modo arbitrario
+ (ad esempio M1(i,j) = (i+j)/2.0). 
+ Fare quindi il salvataggio in un file della matrice sia in formato binario che
+ in formato testuale in modo da ottenere due file separati 'mat_dump.dat' per il
+ formato binario e 'mat_dump.txt' per quello testuale. 
+ Chiudere i file creati
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
