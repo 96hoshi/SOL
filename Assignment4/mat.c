@@ -19,7 +19,13 @@ int main(int argc, char *argv[]){
 	int N = 0;
 	float *M1 = NULL;
 
+	if(argc < 2){
+		fprintf(stderr, "Non ci sono abbastanza input");
+		exit(EXIT_FAILURE);	
+	}
+
 	N = (int)strtol(argv[1], NULL, 10);
+
 	M1 = (float*) malloc((N * N) * sizeof(float));
 	for(size_t i = 0; i < N; ++i)
 		for(size_t j = 0; j < N; ++j)
@@ -39,13 +45,16 @@ int main(int argc, char *argv[]){
 	if(output_txt == NULL){
 		fprintf(stderr, "output_txt");
 		fclose(output_txt);
-		fclose(output_dat);
 		exit(EXIT_FAILURE);
 	}
 
+	/*
+	for(size_t i = 0; i < N * N; ++i)
+ 		fprintf(output_txt, "%f\t", M1[i] );
+ 	*/
 	for(size_t i = 0; i < N; ++i)
 		for(size_t j = 0; j < N; ++j)
-			fprintf(output_txt, "%f\n", M1[i * N + j]);
+			fprintf(output_txt, "%f\t", M1[i * N + j]);
 	fclose(output_txt);
 
 	free(M1);
