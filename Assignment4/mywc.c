@@ -13,37 +13,48 @@
 #include <string.h>
 
 #define MAX_STRING 1024
+#define EXIT_TRUE 1
+#define EXIT_FALSE 0
+
+void check_alloc(void * ptr, int b, const char *s){
+	if(ptr == NULL){
+		fprintf(stderr, "%s\n", s);
+		if(b)
+			exit(EXIT_FAILURE);
+	}
+}
 
 int main(int argc, char *argv[]){
 	int line_count = 0, word_count = 0;
-	int l = 0, w = 0, noflags = 1; 
+	int l = 0, w = 0; 
 	int opt = 0;
 
 	while((opt = getopt(argc, argv, "wl")) != -1){
 		if(opt == 'l'){
 			l = 1;
-			noflags = 0;
 		}
 		if(opt == 'w'){
 			w = 1;
-			noflags = 0;
 		}
+	}
+	if(!l && !w){
+		l = 1;
+		w = 1;
 	}
 
 	char **files = argv + optind;
 	int files_count = argc - optind;
 
-	int *arr_lines = (int *)malloc(files_count * sizeof(int));
+	int *arr_lines = (int *)calloc(files_count, sizeof(int));
+	check_alloc(arr_lines, EXIT_TRUE, "Calloc lines");
 
-	int *arr_words = (int *)malloc(files_count * sizeof(int));
+	int *arr_words = (int *)calloc(files_count, sizeof(int));
+	check_alloc(arr_words, EXIT_TRUE, "Calloc words");
 
 	for(size_t i = 0; i < files_count; ++i){
 		FILE *input = fopen(files[i], "r");
 		if(input == NULL){
-			char *err = (char *)malloc((strlen(files[i]) + 5) * sizeof(char));
-			sprintf(err, "wc: %s", files[i]);
-			perror(err);
-			free(err);
+			fprintf(stderr, "wc: %s: File o directory non esistente\n", files[i]);
 			arr_lines[i] = -1;
 			arr_words[i] = -1;
 			continue;
@@ -52,13 +63,13 @@ int main(int argc, char *argv[]){
 		int lines = 0;
 		int words = 0;
 
-		if(l || noflags){
+		if(l){
 			while((ch = fgetc(input)) != EOF)
 				if(ch == '\n')
 					lines++;
 			arr_lines[i] = lines;
 		}
-		if(w || noflags){
+		if(w){
 			rewind(input);
 			words = 0;
 			char string[MAX_STRING];
@@ -72,29 +83,22 @@ int main(int argc, char *argv[]){
 
 		fclose(input);
 	}
+
 	int digits_l = (int)log10f(line_count) + 1;
 	int digits_w = (int)log10f(word_count) + 1;
 
 	for(size_t i = 0; i < files_count; ++i){
 		if(arr_lines[i] >= 0 && arr_words[i] >= 0){
-			if (l && !w){
+			if(l)
 				printf(" %*d", digits_l, arr_lines[i]);
-				printf(" %s\n", files[i]);
-			}
-			if (w && !l){
+			if(w)
 				printf(" %*d", digits_w, arr_words[i]);
-				printf(" %s\n", files[i]);
-			}
-			if (noflags || (l && w)){
-				printf(" %*d", digits_l, arr_lines[i]);
-				printf(" %*d", digits_w, arr_words[i]);
-				printf("%s\n", files[i]);
-			}
+			printf(" %s\n", files[i]);
 		}
 	}
 
-	if(l || noflags) printf(" %*d", digits_l, line_count);
-	if(w || noflags) printf(" %*d", digits_w, word_count);
+	if(l) printf(" %*d", digits_l, line_count);
+	if(w) printf(" %*d", digits_w, word_count);
 	printf(" totale\n");
 
 	free(arr_lines);
