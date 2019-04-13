@@ -27,14 +27,19 @@ int main (int argc, char *argv[]){
 	}
 
 	list_t *l = createList();
-	char buff[MAX_STRING];
-	while(fgets(buff, MAX_STRING, input) != NULL){
-		char *token = strtok(buff, " \t\n");
+	// char buff[MAX_STRING];
+	// while(fgets(buff, MAX_STRING, input) != NULL){
+	// 	char *token = strtok(buff, " \t\n");
 		
-		while(token){
-			insertList(l, token);
-			token = strtok(NULL, " \t\n");
-		}
+	// 	while(token){
+	// 		insertList(l, token);
+	// 		token = strtok(NULL, " \t\n");
+	// 	}
+	// }
+
+	char token[MAX_STRING];
+	while(fscanf(input, "%s", token) != EOF){
+		insertList(l, token);
 	}
 
 	printList(l); 
