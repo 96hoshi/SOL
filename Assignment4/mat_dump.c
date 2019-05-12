@@ -20,7 +20,7 @@ Testare il programma passando alla funzione 'confronta' la funzione di libreria 
 #include <stdlib.h>
 #include <string.h>
 
-unsigned char confronta(int (*cmp)(const float *, const float *, size_t), float *dat_mat, float *txt_mat, int dim){
+unsigned char confronta(int (*cmp)(const void *, const void *, size_t), float *dat_mat, float *txt_mat, int dim){
 	return cmp(dat_mat, txt_mat, dim * dim * sizeof(float));
 }
 
