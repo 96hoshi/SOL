@@ -40,7 +40,6 @@ int main(int argc, char *argv[]){
 	dat_file = fopen(argv[1], "r");	
 	if(dat_file == NULL){
 		fprintf(stderr, "Impossibile aprire il file in lettura");
-		fclose(dat_file);
 		exit(EXIT_FAILURE);
 	}	
 
@@ -48,7 +47,6 @@ int main(int argc, char *argv[]){
 	if(txt_file == NULL){
 		fprintf(stderr, "Impossibile aprire il file in lettura");
 		fclose(dat_file);
-		fclose(txt_file);
 		exit(EXIT_FAILURE);
 	}	
 
