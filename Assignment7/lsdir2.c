@@ -27,8 +27,7 @@
 #include <errno.h>
 #include <string.h>
 
-#define BUFFSIZE 256
-#define MAXSTRING 128
+#define BUFFSIZE 1024
 
 void printattr(char *file_name)
 {
@@ -36,8 +35,8 @@ void printattr(char *file_name)
 
 	stat(file_name, &info);
 
-	printf("%12s\t", file_name);
-	printf("%12ld\t", info.st_size);
+	printf("%8s\t", file_name);
+	printf("%8ld\t", info.st_size);
 	if (S_IRUSR & info.st_mode) putchar('r');
 	else putchar('-');
 	if (S_IWUSR & info.st_mode) putchar('w');
@@ -61,12 +60,19 @@ void printattr(char *file_name)
 	printf("\n");
 }
 
+int is_legal_dir(char *file_name)
+{
+	if (strcmp(file_name, ".") != 0 && strcmp(file_name, "..") != 0)
+		return 1;
+	return 0;
+}
 
 void processdir(void)
 {
 	DIR *d;
 	struct dirent *file;
 	char buff[BUFFSIZE];
+
 
 	if ((d = opendir(".")) == NULL) {
 		perror("opendir");
@@ -78,42 +84,37 @@ void processdir(void)
 		exit(EXIT_FAILURE);
 	}
 
-	printf("%s\n", buff); /*nome dir*/
+	//strcat(buff, "./");
 
-	// int ndir = 10;	//int ndir = countdir(buff); da definire
-	// size_t i = 0;
-	// char **directories = malloc(10 * sizeof(char *));
-
-	// for (i = 0; i < 10; ++i) {
-	// 	directories[i] = malloc(MAXSTRING * sizeof(char));
-	// }
-
-	// i = 0;
+	printf("Directory: %s\n", buff); /*nome dir*/
 
 	while ((errno = 0, file = readdir(d)) != NULL) {
-	 	if (file->d_type == DT_DIR) { //isdir
-			if (strcmp(file->d_name, ".") != 0 && strcmp(file->d_name, "..") != 0 ){
-				chdir(file->d_name);
-				processdir(); 
-			}
-		} else {
+		if (is_legal_dir(file->d_name))
 			printattr(file->d_name);
-		}
 	}
-
 	if (errno != 0){
 		perror("readdir");
 		exit(EXIT_FAILURE);
 	}
-	printf("--------------------\n");
-
-	// for (i = 0; i < ndir; ++i){
-	// 	//chdir(directories[i]);
-	// 	//processdir();
-
-	// 	printf("%s\n", directories[i]);
-	// 	free(directories[i]);
-	// }
+	printf("-----------------------------\n");
+	//file analizzati
+	rewinddir(d);
+	//analizzo le cartelle
+	while ((errno = 0, file = readdir(d)) != NULL) {
+	 	if (file->d_type == DT_DIR){
+			if (is_legal_dir(file->d_name)){
+				chdir(file->d_name);
+				
+				// strcat(buff, "/");
+				// strcat(buff, file->d_name)
+				processdir(); 
+			}
+		}
+	}
+	if (errno != 0){
+		perror("readdir");
+		exit(EXIT_FAILURE);
+	}
 
 	if (closedir(d) == -1) {
 		perror("closedir");

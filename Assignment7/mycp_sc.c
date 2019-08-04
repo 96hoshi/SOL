@@ -13,8 +13,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	size_t buffersize = 256;
 	int in_fd = 0, out_fd = 0;
 	int read_l = 0, write_l = 0;
